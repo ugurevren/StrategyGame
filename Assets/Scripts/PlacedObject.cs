@@ -5,21 +5,21 @@ using UnityEngine;
 
 public class PlacedObject : MonoBehaviour
 {
-    public static PlacedObject Create(Vector3 worldPosition, Vector2Int origin, BuildingSO buildingSo)
+    public static PlacedObject Create(Vector3 worldPosition, Vector2Int origin, UnitSO unitSo)
     {
-        var transform = Instantiate(buildingSo.prefab, worldPosition, Quaternion.identity);
+        var transform = Instantiate(unitSo.prefab, worldPosition, Quaternion.identity);
         var placedObject = transform.GetComponent<PlacedObject>();
         
-        placedObject._buildingSo = buildingSo;
+        placedObject._unitSo = unitSo;
         placedObject._origin = origin;
         return placedObject;
     }
 
-    private BuildingSO _buildingSo;
+    private UnitSO _unitSo;
     private Vector2Int _origin;
     private List<Vector2Int> GetGridPositionList()
     {
-        return _buildingSo.GetGridPositionList(_origin);
+        return _unitSo.GetGridPositionList(_origin);
     }
     public void DestroySelf()
     {

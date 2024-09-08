@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using Interfaces;
 using UnityEngine;
 
 namespace Building
 {
     [CreateAssetMenu]
-    public class BuildingSO : ScriptableObject
+    public class UnitSO : ScriptableObject, IAttackable
     {
         public string name;
         public Transform prefab;
@@ -26,6 +27,15 @@ namespace Building
                 }
             }
             return gridPositionList;
+        }
+
+        public void TakeDamage(int damage)
+        {
+            health -= damage;
+            if (health <= 0)
+            {
+                Destroy(this);
+            }
         }
     }
 }

@@ -8,8 +8,8 @@ namespace GridSystem
 {
     public class GridTester : MonoBehaviour
     {
-        [SerializeField] private List<BuildingSO> _buildingList;
-        public BuildingSO selectedBuilding;
+        [SerializeField] private List<UnitSO> _buildingList;
+        [FormerlySerializedAs("selectedBuilding")] public UnitSO selectedUnit;
         
         [SerializeField] public int _width;
         [SerializeField] private int _height;
@@ -19,15 +19,15 @@ namespace GridSystem
 
         private void Awake()
         {
-            _grid = new Grid<GridObject>(_width, _height, _cellSize, _originPosition, (g, x, y) => new GridObject(g, x, y),true);
-            selectedBuilding = _buildingList[0];
+            _grid = new Grid<GridObject>(_width, _height, _cellSize, _originPosition, (Grid<GridObject> g, int x, int y) => new GridObject(g, x, y));
+            selectedUnit = _buildingList[0];
         }
 
         private void Update()
         {
             if (Input.GetMouseButtonDown(0)) 
             {
-                if (_grid == null || selectedBuilding == null)
+                if (_grid == null || selectedUnit == null)
                 {
                     Debug.LogError("Grid or Selected Building is null");
                     return;
@@ -43,7 +43,7 @@ namespace GridSystem
                     return;
                 }
 
-                var gridPositionList = selectedBuilding.GetGridPositionList(new Vector2Int(x, y));
+                var gridPositionList = selectedUnit.GetGridPositionList(new Vector2Int(x, y));
                 var canBuild = true;
 
                 for(int i = 0; i<gridPositionList.Count; i++)
@@ -59,11 +59,11 @@ namespace GridSystem
                 if (canBuild)
                 {
                     var placedObjectWorldPosition = _grid.GetWorldPosition(x, y);
-                    var placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, y), selectedBuilding);
+                    var placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, y), selectedUnit);
                     for(int i = 0; i<gridPositionList.Count; i++)
                     {
                         var gridPosition = gridPositionList[i];
-                        SetGridType(_grid.GetWorldPosition(gridPosition.x, gridPosition.y), GridObject.GridType.Building, i, placedObject, selectedBuilding);
+                        SetGridType(_grid.GetWorldPosition(gridPosition.x, gridPosition.y), GridObject.GridType.Building, i, placedObject, selectedUnit);
                     }
                 }
                 else
@@ -80,9 +80,9 @@ namespace GridSystem
             worldPosition.z = 0;
             return worldPosition;
         }
-        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, PlacedObject placedObject = null, BuildingSO buildingSo = null)
+        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, PlacedObject placedObject = null, UnitSO unitSo = null)
         {
-            _grid.GetGridObject(worldPosition).Set(type, index, placedObject, buildingSo);
+            _grid.GetGridObject(worldPosition).Set(type, index, placedObject, unitSo);
         }
         
         public GridObject GetGridObject (int x, int y)
@@ -128,7 +128,7 @@ namespace GridSystem
         public int index;
         public int rotation;
         public PlacedObject PlacedObject;
-        public BuildingSO BuildingSo;
+        public UnitSO UnitSo;
         
         public GridObject(Grid<GridObject> grid, int x, int y, int rotation = 0)
         {
@@ -139,9 +139,9 @@ namespace GridSystem
             this.rotation = rotation;
         }
         
-        public void Set(GridType type, int index, PlacedObject placedObject = null, BuildingSO buildingSo = null)
+        public void Set(GridType type, int index, PlacedObject placedObject = null, UnitSO unitSo = null)
         {
-            if (placedObject == null || buildingSo == null)
+            if (placedObject == null || unitSo == null)
             {
                 Debug.LogError("PlacedObject or BuildingSO is null");
                 return;
@@ -149,7 +149,7 @@ namespace GridSystem
             this.Type = type;
             this.index = index;
             this.PlacedObject = placedObject;
-            this.BuildingSo = buildingSo;
+            this.UnitSo = unitSo;
             grid.TriggerGridObjectChanged(X,Y);
         }
         
