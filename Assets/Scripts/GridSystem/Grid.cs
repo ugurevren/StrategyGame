@@ -1,10 +1,13 @@
 using System;
+using Building;
 using UnityEngine;
 
 namespace GridSystem
 {
     public class Grid<TGridObject>
     {
+        // Singleton instance
+        public static Grid<TGridObject> Instance { get; private set; }
         public event EventHandler<OnGridObjectChangedEventArgs> OnGridObjectChanged;
         public class OnGridObjectChangedEventArgs : EventArgs
         {
@@ -18,9 +21,17 @@ namespace GridSystem
         private Vector3 _originPosition;
         private TGridObject[,] _gridArray;
         private TextMesh[,] _debugTextArray;
+        
         public Grid(int width, int height, float cellSize, Vector3 originPosition,
             Func<Grid<TGridObject>,int,int,TGridObject> createGridObject, bool showDebug = false)
         {
+            if (Instance != null)
+            {
+                Debug.LogError("More than one instance of Grid detected! Replacing old instance.");
+            }
+            
+            Instance = this;
+            
             _width = width;
             _height = height;
             _cellSize = cellSize;
@@ -96,7 +107,7 @@ namespace GridSystem
             return GetGridObject(x, y);
         }
         
-        private void GetXY(Vector3 worldPosition, out int x, out int y)
+        public void GetXY(Vector3 worldPosition, out int x, out int y)
         {
             x = Mathf.FloorToInt((worldPosition-_originPosition).x / _cellSize);
             y = Mathf.FloorToInt((worldPosition-_originPosition).y / _cellSize);
@@ -109,9 +120,16 @@ namespace GridSystem
         {
             return _height;
         }
+        
+        public Vector3 GetMouseWorldSnappedPosition()
+        {
+            var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            GetXY(worldPosition, out var x, out var y);
+            return GetWorldPosition(x, y);
+        }
     
         private static TextMesh CreateWorldText(string text, Transform parent = null, 
-            Vector3 localPosition = default(Vector3), int fontSize = 40, Color color = default(Color), 
+            Vector3 localPosition = default(Vector3), int fontSize = 4, Color color = default(Color), 
             TextAnchor textAnchor = TextAnchor.MiddleCenter, TextAlignment textAlignment = TextAlignment.Center, 
             int sortingOrder = 0)
         {

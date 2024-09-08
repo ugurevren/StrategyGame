@@ -1,42 +1,90 @@
+using System;
+using System.Collections.Generic;
+using Building;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GridSystem
 {
     public class GridTester : MonoBehaviour
     {
+        [SerializeField] private List<BuildingSO> _buildingList;
+        public BuildingSO selectedBuilding;
+        
         [SerializeField] public int _width;
         [SerializeField] private int _height;
         [SerializeField] private float _cellSize;
         [SerializeField] private Vector3 _originPosition;
         private Grid<GridObject> _grid;
-    
-        private void Start()
+
+        private void Awake()
         {
-            _grid = new Grid<GridObject>(_width, _height, _cellSize, _originPosition,
-                (Grid<GridObject> g,int x, int y) => new GridObject(g,x,y),true);
+            _grid = new Grid<GridObject>(_width, _height, _cellSize, _originPosition, (g, x, y) => new GridObject(g, x, y),true);
+            selectedBuilding = _buildingList[0];
         }
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0)) 
             {
-                GridObject gridObject = _grid.GetGridObject(GetMouseWorldPosition());
-                if (gridObject != null)
+                if (_grid == null || selectedBuilding == null)
                 {
-                    Debug.Log("Mouse position: " + GetMouseWorldPosition() + " GridObject: " + gridObject.X + "," + gridObject.Y);
+                    Debug.LogError("Grid or Selected Building is null");
+                    return;
                 }
+
+                var mousePos= GetMouseWorldPosition();
+                _grid.GetXY(mousePos, out var x, out var y);
+                var gridObject = _grid.GetGridObject(x, y);
+
+                if (gridObject == null)
+                {
+                    Debug.LogError("Grid Object is null");
+                    return;
+                }
+
+                var gridPositionList = selectedBuilding.GetGridPositionList(new Vector2Int(x, y));
+                var canBuild = true;
+
+                for(int i = 0; i<gridPositionList.Count; i++)
+                {
+                    var gridPosition = gridPositionList[i];
+                    if (_grid.GetGridObject(gridPosition.x, gridPosition.y)?.Type != GridObject.GridType.Empty)
+                    {
+                        canBuild = false;
+                        break;
+                    }
+                }
+                
+                if (canBuild)
+                {
+                    var placedObjectWorldPosition = _grid.GetWorldPosition(x, y);
+                    var placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, y), selectedBuilding);
+                    for(int i = 0; i<gridPositionList.Count; i++)
+                    {
+                        var gridPosition = gridPositionList[i];
+                        SetGridType(_grid.GetWorldPosition(gridPosition.x, gridPosition.y), GridObject.GridType.Building, i, placedObject, selectedBuilding);
+                    }
+                }
+                else
+                {
+                    Debug.Log("Can't build here");
+                }
+                
             }
         }
+
         public Vector3 GetMouseWorldPosition()
         {
             var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             worldPosition.z = 0;
             return worldPosition;
         }
-        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index)
+        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, PlacedObject placedObject = null, BuildingSO buildingSo = null)
         {
-            _grid.GetGridObject(worldPosition).Set(type, index);
+            _grid.GetGridObject(worldPosition).Set(type, index, placedObject, buildingSo);
         }
+        
         public GridObject GetGridObject (int x, int y)
         {
             return _grid.GetGridObject(x, y);
@@ -79,6 +127,8 @@ namespace GridSystem
         public int Y { get; set; }
         public int index;
         public int rotation;
+        public PlacedObject PlacedObject;
+        public BuildingSO BuildingSo;
         
         public GridObject(Grid<GridObject> grid, int x, int y, int rotation = 0)
         {
@@ -89,16 +139,23 @@ namespace GridSystem
             this.rotation = rotation;
         }
         
-        public void Set(GridType type, int index)
+        public void Set(GridType type, int index, PlacedObject placedObject = null, BuildingSO buildingSo = null)
         {
+            if (placedObject == null || buildingSo == null)
+            {
+                Debug.LogError("PlacedObject or BuildingSO is null");
+                return;
+            }
             this.Type = type;
             this.index = index;
+            this.PlacedObject = placedObject;
+            this.BuildingSo = buildingSo;
             grid.TriggerGridObjectChanged(X,Y);
         }
         
         public override string ToString()
         {
-            return Type.ToString()+index;
+            return ".";
         }
         
         public Vector3 GetWorldPosition()
