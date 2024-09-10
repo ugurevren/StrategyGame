@@ -5,14 +5,13 @@ using System.Collections.Generic;
 public class InfiniteScroll : MonoBehaviour
 {
     [SerializeField] private RectTransform contentPanel;
-    [SerializeField] private List<GameObject> itemPrefabs; // List of different prefabs
-    [SerializeField] private float itemHeight = 100f; // Height of each item
-    [SerializeField] private float itemWidth = 100f; // Width of each item (if needed for X spacing)
-    [SerializeField] private int bufferSize = 10; // Number of items visible in buffer
+    [SerializeField] private List<GameObject> itemPrefabs;
+    [SerializeField] private float itemHeight = 100f; 
+    [SerializeField] private int bufferSize = 10; 
     private List<GameObject> items = new List<GameObject>();
-    private int totalDataCount = 100; // Total number of items (can be infinite source)
-    [SerializeField] private float _spacing = 10f; // Spacing between items
-    [SerializeField] private float _xOffset = 0f; // X-axis offset
+    private int totalDataCount = 100;
+    [SerializeField] private float _spacing = 10f; 
+    [SerializeField] private float _xOffset = 0f; 
 
     private float scrollStartPos;
     private float itemHeightWithSpacing;
@@ -35,9 +34,9 @@ public class InfiniteScroll : MonoBehaviour
     {
         for (int i = 0; i < bufferSize; i++)
         {
-            GameObject newItem = Instantiate(GetPrefabForIndex(i), contentPanel);
-            RectTransform itemRect = newItem.GetComponent<RectTransform>();
-            float yPos = -i * itemHeightWithSpacing;
+            var newItem = Instantiate(GetPrefabForIndex(i), contentPanel);
+            var itemRect = newItem.GetComponent<RectTransform>();
+            var yPos = -i * itemHeightWithSpacing;
             itemRect.anchoredPosition = new Vector2(_xOffset, yPos);
             items.Add(newItem);
         }
@@ -48,7 +47,7 @@ public class InfiniteScroll : MonoBehaviour
 
     private void HandleScrolling()
     {
-        float scrollPosY = contentPanel.anchoredPosition.y;
+        var scrollPosY = contentPanel.anchoredPosition.y;
 
         // Detect if we've scrolled beyond the buffer on the top or bottom
         if (scrollPosY - scrollStartPos > itemHeightWithSpacing)
@@ -76,29 +75,25 @@ public class InfiniteScroll : MonoBehaviour
     private void RecycleItemFromTopToBottom()
     {
         // Recycle top item to the bottom
-        GameObject topItem = items[0];
+        var topItem = items[0];
         items.RemoveAt(0);
 
-        RectTransform topItemRect = topItem.GetComponent<RectTransform>();
-        float newYPos = items[items.Count - 1].GetComponent<RectTransform>().anchoredPosition.y - itemHeightWithSpacing;
+        var topItemRect = topItem.GetComponent<RectTransform>();
+        var newYPos = items[items.Count - 1].GetComponent<RectTransform>().anchoredPosition.y - itemHeightWithSpacing;
         topItemRect.anchoredPosition = new Vector2(_xOffset, newYPos);
         items.Add(topItem);
-
-        int newIndex = (int)((newYPos + contentHeight) / itemHeightWithSpacing) % totalDataCount;
     }
 
     private void RecycleItemFromBottomToTop()
     {
         // Recycle bottom item to the top
-        GameObject bottomItem = items[items.Count - 1];
+        var bottomItem = items[items.Count - 1];
         items.RemoveAt(items.Count - 1);
 
-        RectTransform bottomItemRect = bottomItem.GetComponent<RectTransform>();
-        float newYPos = items[0].GetComponent<RectTransform>().anchoredPosition.y + itemHeightWithSpacing;
+        var bottomItemRect = bottomItem.GetComponent<RectTransform>();
+        var newYPos = items[0].GetComponent<RectTransform>().anchoredPosition.y + itemHeightWithSpacing;
         bottomItemRect.anchoredPosition = new Vector2(_xOffset, newYPos);
         items.Insert(0, bottomItem);
-
-        int newIndex = (int)((newYPos + contentHeight) / itemHeightWithSpacing) % totalDataCount;
     }
 
     private void AddItemsAtTop()
@@ -106,9 +101,9 @@ public class InfiniteScroll : MonoBehaviour
         // Add items to the top if there is space
         while (items[0].GetComponent<RectTransform>().anchoredPosition.y + contentPanel.rect.height < 0)
         {
-            GameObject newItem = Instantiate(GetPrefabForIndex(items.Count), contentPanel);
-            RectTransform newItemRect = newItem.GetComponent<RectTransform>();
-            float newYPos = items[0].GetComponent<RectTransform>().anchoredPosition.y + itemHeightWithSpacing;
+            var newItem = Instantiate(GetPrefabForIndex(items.Count), contentPanel);
+            var newItemRect = newItem.GetComponent<RectTransform>();
+            var newYPos = items[0].GetComponent<RectTransform>().anchoredPosition.y + itemHeightWithSpacing;
             newItemRect.anchoredPosition = new Vector2(_xOffset, newYPos);
             items.Insert(0, newItem);
         }
@@ -119,9 +114,9 @@ public class InfiniteScroll : MonoBehaviour
         // Add items to the bottom if there is space
         while (items[items.Count - 1].GetComponent<RectTransform>().anchoredPosition.y < -contentPanel.rect.height)
         {
-            GameObject newItem = Instantiate(GetPrefabForIndex(items.Count), contentPanel);
-            RectTransform newItemRect = newItem.GetComponent<RectTransform>();
-            float newYPos = items[items.Count - 1].GetComponent<RectTransform>().anchoredPosition.y - itemHeightWithSpacing;
+            var newItem = Instantiate(GetPrefabForIndex(items.Count), contentPanel);
+            var newItemRect = newItem.GetComponent<RectTransform>();
+            var newYPos = items[items.Count - 1].GetComponent<RectTransform>().anchoredPosition.y - itemHeightWithSpacing;
             newItemRect.anchoredPosition = new Vector2(_xOffset, newYPos);
             items.Add(newItem);
         }
@@ -129,7 +124,7 @@ public class InfiniteScroll : MonoBehaviour
     
     private GameObject GetPrefabForIndex(int index)
     {
-        int prefabIndex = index % itemPrefabs.Count;
+        var prefabIndex = index % itemPrefabs.Count;
         return itemPrefabs[prefabIndex];
     }
 

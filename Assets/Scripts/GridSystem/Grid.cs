@@ -6,6 +6,9 @@ namespace GridSystem
 {
    public class Grid<TGridObject> {
 
+    
+    //Singleton
+    public static Grid<TGridObject> Instance { get; private set; }
     public event EventHandler<OnGridObjectChangedEventArgs> OnGridObjectChanged;
     public class OnGridObjectChangedEventArgs : EventArgs {
         public int X;
@@ -19,6 +22,8 @@ namespace GridSystem
     private TGridObject[,] _gridArray;
 
     public Grid(int width, int height, float cellSize, Vector3 originPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
+        //Singelton
+        Instance = this;
         _width = width;
         _height = height;
         _cellSize = cellSize;
@@ -32,7 +37,7 @@ namespace GridSystem
             }
         }
 
-        bool showDebug = true;
+        bool showDebug = false;
         if (showDebug) {
             TextMesh[][] debugTextArray = new TextMesh[width][];
             for (int index = 0; index < width; index++)
@@ -86,6 +91,14 @@ namespace GridSystem
 
     public void TriggerGridObjectChanged(int x, int y) {
         if (OnGridObjectChanged != null) OnGridObjectChanged(this, new OnGridObjectChangedEventArgs { X = x, Y = y });
+    }
+    
+    public Vector3 GetMouseSnappedWorldPosition()
+    {
+        var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        worldPosition.z = 0;
+        GetXY(worldPosition, out var x, out var y);
+        return GetWorldPosition(x, y);
     }
 
     public void SetGridObject(Vector3 worldPosition, TGridObject value) {

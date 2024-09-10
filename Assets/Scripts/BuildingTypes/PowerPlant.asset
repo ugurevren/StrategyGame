@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: PowerPlant
   m_EditorClassIdentifier: 
   name: PowerPlant
-  prefab: {fileID: 8588413700524061240, guid: 6c51c49863e56d9439e2835494f0530e, type: 3}
-  visual: {fileID: 8588413700524061240, guid: 6c51c49863e56d9439e2835494f0530e, type: 3}
-  width: 4
+  prefab: {fileID: 8588413700524061240, guid: c30da1266b7d3a34ba1dcf7d03da9ed2, type: 3}
+  createdGameObject: {fileID: 0}
+  visual: {fileID: 8588413700524061240, guid: c30da1266b7d3a34ba1dcf7d03da9ed2, type: 3}
+  sprite: {fileID: 0}
+  width: 2
   height: 3
   health: 50
   energyCost: 0

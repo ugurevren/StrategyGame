@@ -1,21 +1,23 @@
-using System;
 using System.Collections.Generic;
 using Building;
+using Helpers;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace GridSystem
 {
     public class GridTester : MonoBehaviour
     {
         [SerializeField] private List<UnitSO> _buildingList;
-        [FormerlySerializedAs("selectedBuilding")] public UnitSO selectedUnit;
+        public UnitSO selectedUnit;
         
         [SerializeField] public int _width;
         [SerializeField] private int _height;
         [SerializeField] private float _cellSize;
         [SerializeField] private Vector3 _originPosition;
-        private Grid<GridObject> _grid;
+        private static Grid<GridObject> _grid;
+        [SerializeField] private IsPointerOverUI _isPointerOverUI;
+        private bool _buildingMode = false;
+        [SerializeField] private InfoPanel _infoPanel;
 
         private void Awake()
         {
@@ -25,7 +27,7 @@ namespace GridSystem
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0)) 
+            if (Input.GetMouseButtonDown(0) && !_isPointerOverUI.IsPointerOverUIElement()&&_buildingMode) 
             {
                 if (_grid == null || selectedUnit == null)
                 {
@@ -49,7 +51,11 @@ namespace GridSystem
                 for(int i = 0; i<gridPositionList.Count; i++)
                 {
                     var gridPosition = gridPositionList[i];
-                    if (_grid.GetGridObject(gridPosition.x, gridPosition.y)?.Type != GridObject.GridType.Empty)
+                    if (IsBuildable(gridPosition))
+                    {
+                        canBuild = true;
+                    }
+                    else
                     {
                         canBuild = false;
                         break;
@@ -59,7 +65,7 @@ namespace GridSystem
                 if (canBuild)
                 {
                     var placedObjectWorldPosition = _grid.GetWorldPosition(x, y);
-                    var placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, y), selectedUnit);
+                    var placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, y), selectedUnit,_infoPanel, _grid, this);
                     for(int i = 0; i<gridPositionList.Count; i++)
                     {
                         var gridPosition = gridPositionList[i];
@@ -74,25 +80,52 @@ namespace GridSystem
             }
         }
 
+        public bool IsBuildable( Vector2Int gridPosition)
+        {
+            return _grid.GetGridObject(gridPosition.x, gridPosition.y)?.Type == GridObject.GridType.Empty;
+        }
+
+        public void SelectUnit(string name)
+        {
+            for(int i = 0; i<_buildingList.Count; i++)
+            {
+                if (_buildingList[i].name != name) continue;
+                selectedUnit = _buildingList[i];
+                break;
+            }
+        }
+        
         public Vector3 GetMouseWorldPosition()
         {
             var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             worldPosition.z = 0;
             return worldPosition;
         }
-        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, PlacedObject placedObject = null, UnitSO unitSo = null)
+        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, UnitSO unitSo = null)
         {
-            _grid.GetGridObject(worldPosition).Set(type, index, placedObject, unitSo);
+            _grid.GetGridObject(worldPosition).Set(type, index, unitSo);
+        }
+        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, PlacedObject placedObject, UnitSO unitSo = null)
+        {
+            _grid.GetGridObject(worldPosition).Set(type, index, unitSo);
+        }
+        public bool GetProductionMode()
+        {
+            return _infoPanel.gameObject.activeSelf;
+        }
+        public Grid<GridObject> GetGrid()
+        {
+            return _grid;
         }
         
-        public GridObject GetGridObject (int x, int y)
+        public void BuildMode()
         {
-            return _grid.GetGridObject(x, y);
+            _buildingMode = !_buildingMode;
         }
         
-        public GridObject GetGridObject (Vector3 worldPosition)
+        public bool GetBuildingMode()
         {
-            return _grid.GetGridObject(worldPosition);
+            return _buildingMode;
         }
 
         public void Clear()
@@ -110,58 +143,6 @@ namespace GridSystem
        
     }
     
-    public class GridObject
-    {
-        [System.Serializable]
-        public enum GridType
-        {
-            Building,
-            Enemy,
-            FriendlyUnit,
-            Empty
-            
-        }
-        public Grid<GridObject> grid;
-        public GridType Type { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int index;
-        public int rotation;
-        public PlacedObject PlacedObject;
-        public UnitSO UnitSo;
-        
-        public GridObject(Grid<GridObject> grid, int x, int y, int rotation = 0)
-        {
-            this.grid = grid;
-            this.X = x;
-            this.Y = y;
-            this.Type = GridType.Empty;
-            this.rotation = rotation;
-        }
-        
-        public void Set(GridType type, int index, PlacedObject placedObject = null, UnitSO unitSo = null)
-        {
-            if (placedObject == null || unitSo == null)
-            {
-                Debug.LogError("PlacedObject or BuildingSO is null");
-                return;
-            }
-            this.Type = type;
-            this.index = index;
-            this.PlacedObject = placedObject;
-            this.UnitSo = unitSo;
-            grid.TriggerGridObjectChanged(X,Y);
-        }
-        
-        public override string ToString()
-        {
-            return ".";
-        }
-        
-        public Vector3 GetWorldPosition()
-        {
-            return grid.GetWorldPosition(X, Y);
-        }
-    }
+   
     
 }
