@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Soldier;
@@ -5,6 +6,26 @@ using UnityEngine;
 
 public class InfoPanel : MonoBehaviour
 {
+    // Singleton
+    public static InfoPanel Instance { get; private set; }
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
+
     [SerializeField] private GameObject _productionUIItemPrefab;
     [SerializeField] private Transform _productionPanel;
     [SerializeField] private SoldierSpawner _soldierSpawner;
@@ -21,14 +42,6 @@ public class InfoPanel : MonoBehaviour
     public int _soldier3Damage;
     public int _soldier3Cost;
     
-    public void OpenInfoPanel()
-    {
-        gameObject.SetActive(true);
-    }
-    public void CloseInfoPanel()
-    {
-        gameObject.SetActive(false);
-    }
     public void OpenCloseInfoPanel()
     {
         gameObject.SetActive(!gameObject.activeSelf);

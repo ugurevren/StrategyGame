@@ -14,7 +14,6 @@ namespace Soldier
         public Sprite _sprite;
         private SpriteRenderer _spriteRenderer;
         private List<Vector3> path;
-        private GridTester _gridTester;
         private Vector2Int _origin;
     
         private void Start()
@@ -26,27 +25,23 @@ namespace Soldier
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0) && !_gridTester.GetBuildingMode()&&!_gridTester.GetProductionMode())
+            if (Input.GetMouseButtonDown(0) && !GridTester.Instance.GetBuildingMode()&&!GridTester.Instance.GetProductionMode())
             {
-                Debug.Log("Clicked to soldiee");
-                var worldPosition = GetMouseWorldPosition();
+                var worldPosition = GridTester.Instance.GetMouseWorldPosition();
                 Grid<GridObject>.Instance.GetXY(worldPosition, out var x, out var y);
                 if (x == _origin.x && y == _origin.y)
                 {
-                    Debug.Log("Clicked to soldiee");
-                    Debug.Log("waiting");
                     StartCoroutine(WaitForSecondInput());
                 }
 
             }
-            // origin
-       
         }
+        
         private IEnumerator WaitForSecondInput()
         {
             yield return new WaitUntil(() => Input.GetMouseButtonDown(1)); // Wait for left mouse button click
 
-            var worldPosition = GetMouseWorldPosition();
+            var worldPosition = GridTester.Instance.GetMouseWorldPosition();
             Grid<GridObject>.Instance.GetXY(worldPosition, out var x, out var y);
             switch (Grid<GridObject>.Instance.GetGridObject(x,y).Type)
             {
@@ -95,14 +90,7 @@ namespace Soldier
             var dead = false;
             while (!dead)
             {
-                var unitSo =Grid<GridObject>.Instance.GetGridObject(_origin.x,_origin.y).UnitSo;
-                unitSo.TakeDamage(attackDamage,out bool isDead);
-                dead = isDead;
-                if (dead)
-                {
-                    Destroy(unitSo.GetCreatedGameObject());
-                    break;
-                }
+                //TODO attack
             }
         
         
@@ -150,18 +138,5 @@ namespace Soldier
         {
             _origin = origin;
         }
-
-        public void SetGridTester(GridTester gridTester)
-        {
-            _gridTester = gridTester;
-        }
-        public Vector3 GetMouseWorldPosition()
-        {
-            var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            worldPosition.z = 0;
-            return worldPosition;
-        }
-   
-
     }
 }

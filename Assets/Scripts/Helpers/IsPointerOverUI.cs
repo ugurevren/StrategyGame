@@ -6,13 +6,23 @@ namespace Helpers
 {
     public class IsPointerOverUI : MonoBehaviour
     {
-        private int UILayer;
-
-        private void Start()
+        // Singleton
+        public static IsPointerOverUI Instance { get; private set; }
+        private void Awake()
         {
-            UILayer = LayerMask.NameToLayer("UI");
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
         }
-    
+
+        private const int _uiLayer = 5;
+
         public bool IsPointerOverUIElement()
         {
             return IsPointerOverUIElement(GetEventSystemRaycastResults());
@@ -23,7 +33,7 @@ namespace Helpers
             for (int index = 0; index < eventSystemRaysastResults.Count; index++)
             {
                 RaycastResult curRaysastResult = eventSystemRaysastResults[index];
-                if (curRaysastResult.gameObject.layer == UILayer)
+                if (curRaysastResult.gameObject.layer == _uiLayer)
                     return true;
             }
             return false;

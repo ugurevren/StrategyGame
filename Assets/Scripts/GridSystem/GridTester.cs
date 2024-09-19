@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Building;
 using Helpers;
 using UnityEngine;
@@ -7,6 +8,10 @@ namespace GridSystem
 {
     public class GridTester : MonoBehaviour
     {
+        // Singleton
+        public static GridTester Instance { get; private set; }
+        
+        
         [SerializeField] private List<UnitSO> _buildingList;
         public UnitSO selectedUnit;
         
@@ -15,76 +20,76 @@ namespace GridSystem
         [SerializeField] private float _cellSize;
         [SerializeField] private Vector3 _originPosition;
         private static Grid<GridObject> _grid;
-        [SerializeField] private IsPointerOverUI _isPointerOverUI;
         private bool _buildingMode = false;
         [SerializeField] private InfoPanel _infoPanel;
+        private Camera _camera;
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+
             _grid = new Grid<GridObject>(_width, _height, _cellSize, _originPosition, (Grid<GridObject> g, int x, int y) => new GridObject(g, x, y));
             selectedUnit = _buildingList[0];
+            _camera = Camera.main;
         }
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0) && !_isPointerOverUI.IsPointerOverUIElement()&&_buildingMode) 
+            if (!Input.GetMouseButtonDown(0) || IsPointerOverUI.Instance.IsPointerOverUIElement() ||
+                !_buildingMode) return;
+            
+            var mousePos= GetMouseWorldPosition();
+            _grid.GetXY(mousePos, out var x, out var y);
+            var gridObject = _grid.GetGridObject(x, y);
+            
+            // Check if the grid object is null
+            if (gridObject == null) return;
+                
+            // Unit may occupy more than one space so we need to check all of them
+            var gridPositionList = GetGridPositionList(new Vector2Int(x, y),selectedUnit.width, selectedUnit.height); 
+                
+            // Check if all grid positions are buildable
+            if (gridPositionList.Any(gridPosition => !IsBuildable(gridPosition)))
             {
-                if (_grid == null || selectedUnit == null)
-                {
-                    Debug.LogError("Grid or Selected Building is null");
-                    return;
-                }
-
-                var mousePos= GetMouseWorldPosition();
-                _grid.GetXY(mousePos, out var x, out var y);
-                var gridObject = _grid.GetGridObject(x, y);
-
-                if (gridObject == null)
-                {
-                    Debug.LogError("Grid Object is null");
-                    return;
-                }
-
-                var gridPositionList = selectedUnit.GetGridPositionList(new Vector2Int(x, y));
-                var canBuild = true;
-
-                for(int i = 0; i<gridPositionList.Count; i++)
-                {
-                    var gridPosition = gridPositionList[i];
-                    if (IsBuildable(gridPosition))
-                    {
-                        canBuild = true;
-                    }
-                    else
-                    {
-                        canBuild = false;
-                        break;
-                    }
-                }
+                return;
+            }
                 
-                if (canBuild)
-                {
-                    var placedObjectWorldPosition = _grid.GetWorldPosition(x, y);
-                    var placedObject = PlacedObject.Create(placedObjectWorldPosition, new Vector2Int(x, y), selectedUnit,_infoPanel, _grid, this);
-                    for(int i = 0; i<gridPositionList.Count; i++)
-                    {
-                        var gridPosition = gridPositionList[i];
-                        SetGridType(_grid.GetWorldPosition(gridPosition.x, gridPosition.y), GridObject.GridType.Building, i, placedObject, selectedUnit);
-                    }
-                }
-                else
-                {
-                    Debug.Log("Can't build here");
-                }
-                
+            // Place the object
+            var placedObjectWorldPosition = _grid.GetWorldPosition(x, y);
+            var placedObject = PlacedObjectPool.Instance.Get(placedObjectWorldPosition, new Vector2Int(x, y), selectedUnit);
+            for (int i = 0; i < gridPositionList.Count; i++)
+            {
+                var gridPosition = gridPositionList[i];
+                SetGridType(_grid.GetWorldPosition(gridPosition.x, gridPosition.y),
+                    GridObject.GridType.Building, i, placedObject, selectedUnit);
             }
         }
 
-        public bool IsBuildable( Vector2Int gridPosition)
+        public static bool IsBuildable( Vector2Int gridPosition)
         {
             return _grid.GetGridObject(gridPosition.x, gridPosition.y)?.Type == GridObject.GridType.Empty;
         }
-
+        private List<Vector2Int> GetGridPositionList(Vector2Int offset, int width, int height)
+        {
+            var gridPositionList = new List<Vector2Int>();
+            
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    gridPositionList.Add(new Vector2Int(x + offset.x, y + offset.y));
+                }
+            }
+            return gridPositionList;
+        }
         public void SelectUnit(string name)
         {
             for(int i = 0; i<_buildingList.Count; i++)
@@ -97,7 +102,7 @@ namespace GridSystem
         
         public Vector3 GetMouseWorldPosition()
         {
-            var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var worldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             worldPosition.z = 0;
             return worldPosition;
         }

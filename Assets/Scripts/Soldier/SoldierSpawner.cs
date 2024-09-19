@@ -20,12 +20,11 @@ namespace Soldier
     
         public void SpawnSoldier(int soldierType, Vector2Int gridPos)
         {
-            if (!_gridTester.IsBuildable(gridPos)) return;
+            if (!GridTester.IsBuildable(gridPos)) return;
         
             var spawnPos = Grid<GridObject>.Instance.GetWorldPosition(gridPos.x, gridPos.y);
             var soldierGO = Instantiate(_soldierPrefab, spawnPos, Quaternion.identity);
-            var soldierScript = soldierGO.GetComponent<global::Soldier.Soldier>();
-            soldierScript.SetGridTester(_gridTester);
+            var soldierScript = soldierGO.GetComponent<Soldier>();
             soldierScript.SetOrigin(gridPos);
 
             switch (soldierType)
