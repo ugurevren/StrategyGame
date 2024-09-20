@@ -7,7 +7,7 @@ namespace Building
     public class BuildingGhost : MonoBehaviour
     {
         private Transform _visual;
-        private UnitSO _unitSo;
+        private Poolable _poolable;
         private Vector3 _targetPosition;
         [SerializeField] private GridTester _gridTester;
         [SerializeField] private IsPointerOverUI _isPointerOverUI;
@@ -19,7 +19,7 @@ namespace Building
         }
         private void LateUpdate()
         {
-            if (_unitSo == null)
+            if (_poolable == null)
             {
                 return;
             }
@@ -45,16 +45,16 @@ namespace Building
         }
         private void RefreshVisual()
         {
-            if (_unitSo != null)
+            if (_poolable != null)
             {
                 Destroy(_visual.gameObject);
             }
-            _unitSo = _gridTester.selectedUnit;
-            if (_unitSo == null)
+            _poolable = _gridTester.selectedBuilding;
+            if (_poolable == null)
             {
                 return;
             }
-            _visual = Instantiate(_unitSo.visual, _targetPosition, Quaternion.identity);
+            _visual = Instantiate(_poolable.ghostVisual, _targetPosition, Quaternion.identity);
         }
     }
 }

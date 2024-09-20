@@ -1303,9 +1303,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _buildingList:
-  - {fileID: 11400000, guid: c557877002d5ac446b699801226d8ba0, type: 2}
-  - {fileID: 11400000, guid: 70aa17bdf96d795489374972b200966a, type: 2}
-  selectedUnit: {fileID: 0}
+  - {fileID: 1075587069457562430, guid: 6c51c49863e56d9439e2835494f0530e, type: 3}
+  selectedBuilding: {fileID: 0}
   _width: 40
   _height: 40
   _cellSize: 4

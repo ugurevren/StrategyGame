@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Building;
 using UnityEngine;
 
 namespace GridSystem
@@ -21,6 +20,7 @@ namespace GridSystem
         public int Y { get; set; }
         public int index;
         public int rotation;
+        public Poolable poolable;
         public UnitSO UnitSo;
         
         public GridObject(Grid<GridObject> grid, int x, int y, int rotation = 0)
@@ -39,11 +39,11 @@ namespace GridSystem
             this.UnitSo = unitSo;
             grid.TriggerGridObjectChanged(X,Y);
         }
-        public void Set(GridType type, int index,PlacedObject placedObject, UnitSO unitSo = null)
+        public void Set(GridType type, int index,Poolable poolable)
         {
             this.Type = type;
             this.index = index;
-            this.UnitSo = unitSo;
+           this.poolable = poolable;
             grid.TriggerGridObjectChanged(X,Y);
         }
         

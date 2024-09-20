@@ -5,8 +5,21 @@ namespace GridSystem
 {
     public class Pathfinding
     {
+        private static Pathfinding _instance;
         //Singleton
-        public static Pathfinding Instance { get; private set; }
+        public static Pathfinding Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new Pathfinding();
+                }
+                return _instance;
+                
+            }
+            private set => _instance = value;
+        }
 
         private const int MOVE_STRAIGHT = 10;
         private const int MOVE_DIAGONAL = 14;
@@ -16,12 +29,10 @@ namespace GridSystem
     
         private List<PathNode> _openList;
         private List<PathNode> _closedList;
-    
-        public Pathfinding(int width, int height, Grid<GridObject> buildingGrid)
+
+        private Pathfinding()
         {
-            Instance = this;
-            _grid = new Grid<PathNode>(width, height, 4f, new Vector3(-75,-50,0), (Grid<PathNode> global, int x, int y) => new PathNode(global, x, y));
-            _buildingGrid = buildingGrid;
+            
         }
 
         public Grid<PathNode> GetGrid() {
@@ -134,6 +145,11 @@ namespace GridSystem
                 }
             }
             return lowestFCostNode;
+        }
+        public void SetPathfinding(int width, int height, Grid<GridObject> buildingGrid)
+        {
+            _grid = new Grid<PathNode>(width, height, 4f, new Vector3(-75,-50,0), (Grid<PathNode> global, int x, int y) => new PathNode(global, x, y));
+            _buildingGrid = buildingGrid;
         }
     }
 }

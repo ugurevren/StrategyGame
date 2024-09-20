@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Building;
 using Helpers;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace GridSystem
 {
@@ -11,9 +11,8 @@ namespace GridSystem
         // Singleton
         public static GridTester Instance { get; private set; }
         
-        
-        [SerializeField] private List<UnitSO> _buildingList;
-        public UnitSO selectedUnit;
+        [SerializeField] private List<BuildingBase> _buildingList;
+        public BuildingBase selectedBuilding;
         
         [SerializeField] public int _width;
         [SerializeField] private int _height;
@@ -37,7 +36,6 @@ namespace GridSystem
             }
 
             _grid = new Grid<GridObject>(_width, _height, _cellSize, _originPosition, (Grid<GridObject> g, int x, int y) => new GridObject(g, x, y));
-            selectedUnit = _buildingList[0];
             _camera = Camera.main;
         }
 
@@ -54,7 +52,8 @@ namespace GridSystem
             if (gridObject == null) return;
                 
             // Unit may occupy more than one space so we need to check all of them
-            var gridPositionList = GetGridPositionList(new Vector2Int(x, y),selectedUnit.width, selectedUnit.height); 
+            Debug.Log(selectedBuilding);
+            var gridPositionList = GetGridPositionList(new Vector2Int(x, y),selectedBuilding.width, selectedBuilding.height); 
                 
             // Check if all grid positions are buildable
             if (gridPositionList.Any(gridPosition => !IsBuildable(gridPosition)))
@@ -64,12 +63,13 @@ namespace GridSystem
                 
             // Place the object
             var placedObjectWorldPosition = _grid.GetWorldPosition(x, y);
-            var placedObject = PlacedObjectPool.Instance.Get(placedObjectWorldPosition, new Vector2Int(x, y), selectedUnit);
+            Debug.Log(selectedBuilding);
+            var placedObject = PlacedObjectPool.Instance.Get(placedObjectWorldPosition, new Vector2Int(x, y), selectedBuilding);
             for (int i = 0; i < gridPositionList.Count; i++)
             {
                 var gridPosition = gridPositionList[i];
                 SetGridType(_grid.GetWorldPosition(gridPosition.x, gridPosition.y),
-                    GridObject.GridType.Building, i, placedObject, selectedUnit);
+                    GridObject.GridType.Building, i, placedObject);
             }
         }
 
@@ -92,14 +92,16 @@ namespace GridSystem
         }
         public void SelectUnit(string name)
         {
+            Debug.Log(name);
+            
             for(int i = 0; i<_buildingList.Count; i++)
             {
+                Debug.Log(_buildingList[i].name);
                 if (_buildingList[i].name != name) continue;
-                selectedUnit = _buildingList[i];
+                selectedBuilding = _buildingList[i];
                 break;
             }
         }
-        
         public Vector3 GetMouseWorldPosition()
         {
             var worldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
@@ -110,9 +112,9 @@ namespace GridSystem
         {
             _grid.GetGridObject(worldPosition).Set(type, index, unitSo);
         }
-        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, PlacedObject placedObject, UnitSO unitSo = null)
+        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, Poolable poolable)
         {
-            _grid.GetGridObject(worldPosition).Set(type, index, unitSo);
+            _grid.GetGridObject(worldPosition).Set(type, index, poolable);
         }
         public bool GetProductionMode()
         {

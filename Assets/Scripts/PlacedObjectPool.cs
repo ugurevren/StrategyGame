@@ -6,7 +6,7 @@ public class PlacedObjectPool : MonoBehaviour
 {
     public static PlacedObjectPool Instance { get; private set; }
 
-    private Queue<PlacedObject> pool = new Queue<PlacedObject>();
+    private Queue<Poolable> pool = new Queue<Poolable>();
 
     private void Awake()
     {
@@ -21,23 +21,23 @@ public class PlacedObjectPool : MonoBehaviour
         }
     }
 
-    public PlacedObject Get(Vector3 worldPosition, Vector2Int origin, UnitSO unitSo)
+    public Poolable Get(Vector3 worldPosition, Vector2Int origin, Poolable obj)
     {
-        PlacedObject placedObject;
+        Poolable poolable;
         if (pool.Count == 0)
         {
-            placedObject = PlacedObject.Create(worldPosition, origin, unitSo);
+            poolable = Poolable.Create(worldPosition, origin, obj);
         }
         else
         {
-            placedObject = pool.Dequeue();
-            placedObject.Reinitialize(worldPosition, origin, unitSo);
+            poolable = pool.Dequeue();
+            poolable.Reinitialize(worldPosition, origin);
         }
-        return placedObject;
+        return poolable;
     }
 
-    public void ReturnToPool(PlacedObject placedObject)
+    public void ReturnToPool(Poolable poolable)
     {
-        pool.Enqueue(placedObject);
+        pool.Enqueue(poolable);
     }
 }
