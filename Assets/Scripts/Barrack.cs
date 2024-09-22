@@ -10,10 +10,8 @@ public class Barrack : BuildingBase
     {
         if (Input.GetMouseButtonDown(0)&&!GridTester.Instance.GetBuildingMode())
         {
-            Debug.Log("Barrack");
             if (CheckClick(3, 3))
             {
-                Debug.Log("clicked");
                 InfoPanel.Instance.OpenCloseInfoPanel();
                 if (!InfoPanel.Instance.gameObject.activeSelf) return;
                 InfoPanel.Instance.Clear();

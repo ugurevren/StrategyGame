@@ -152,7 +152,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 546741907314832304}
-  - component: {fileID: 5010799082064305094}
+  - component: {fileID: -1229351251196884685}
   m_Layer: 0
   m_Name: Soldier1
   m_TagString: Untagged
@@ -176,7 +176,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5010799082064305094
+--- !u!114 &-1229351251196884685
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,11 +185,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 546741907314832305}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bf2f04dc38cc01438ecfe5f9cc44d42, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f5005054739ed745b3550563a9be2f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 546741907314832305}
   ghostVisual: {fileID: 546741907298123518}
   unitData: {fileID: 11400000, guid: 0d847284a449b174d86b115bf9ecf344, type: 2}
-  width: 1
-  height: 1
+  width: 0
+  height: 0
+  health: 10
+  target: {fileID: 0}
+  _sprite: {fileID: 21300000, guid: 2be53753fbea3e3449ef47bb2c22c42a, type: 3}

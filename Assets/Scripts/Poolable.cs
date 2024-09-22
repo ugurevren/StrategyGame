@@ -25,11 +25,5 @@ public class Poolable : MonoBehaviour
         _origin = origin;
         _created = true;
     }
-    public Vector3 GetMouseWorldPosition()
-    {
-        var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        worldPosition.z = 0;
-        return worldPosition;
-    }
 }
  

@@ -16,16 +16,10 @@ namespace GridSystem
         {
             if (Input.GetMouseButtonDown(0)) {
                 //TODO camera zırtosu
-                Vector3 mouseWorldPosition = GetMouseWorldPosition();
+                Vector3 mouseWorldPosition = GridTester.Instance.GetMouseWorldPosition();
                 Pathfinding.Instance.GetGrid().GetXY(mouseWorldPosition, out int x, out int y);
                 List<PathNode> path = Pathfinding.Instance.FindPath(0, 0, x, y);
             }
-        }
-        private Vector3 GetMouseWorldPosition()
-        {
-            var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            worldPosition.z = 0;
-            return worldPosition;
         }
     }
 }

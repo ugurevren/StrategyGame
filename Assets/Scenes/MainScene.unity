@@ -514,14 +514,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b10638f15f03ff4b8e37e62dbacce62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _soldierPrefab: {fileID: 546741907314832305, guid: 75a5813f0593842499bcb321eb81f500, type: 3}
+  _soldierPrefab: {fileID: 546741907314832305, guid: cee851c4cb66f0b4898487d7b19130f9, type: 3}
   _soldier1Sprite: {fileID: 21300000, guid: 2be53753fbea3e3449ef47bb2c22c42a, type: 3}
   _soldier1Damage: 10
   _soldier2Sprite: {fileID: 21300000, guid: 5eed28d76bf7c7948942da8ac2f5f8c2, type: 3}
   _soldier2Damage: 5
   _soldier3Sprite: {fileID: 21300000, guid: db3a2091bacbb4948a4c157f7b5fea86, type: 3}
   _soldier3Damage: 2
-  _gridTester: {fileID: 1238919491}
 --- !u!114 &606930043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1849,7 +1848,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.0125, y: 0.91778505}
   m_AnchorMax: {x: 1, y: 0.98443806}
-  m_AnchoredPosition: {x: -0.5000305, y: 0}
+  m_AnchoredPosition: {x: -0.500103, y: 0}
   m_SizeDelta: {x: -4, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1948749809

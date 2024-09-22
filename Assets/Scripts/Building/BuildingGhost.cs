@@ -36,13 +36,6 @@ namespace Building
             _visual.position = _targetPosition;
         
         }
-    
-        public Vector3 GetMouseWorldPosition()
-        {
-            var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            worldPosition.z = 0;
-            return worldPosition;
-        }
         private void RefreshVisual()
         {
             if (_poolable != null)

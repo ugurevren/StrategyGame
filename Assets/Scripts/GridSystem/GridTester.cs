@@ -73,7 +73,7 @@ namespace GridSystem
             }
         }
 
-        public static bool IsBuildable( Vector2Int gridPosition)
+        public bool IsBuildable( Vector2Int gridPosition)
         {
             return _grid.GetGridObject(gridPosition.x, gridPosition.y)?.Type == GridObject.GridType.Empty;
         }

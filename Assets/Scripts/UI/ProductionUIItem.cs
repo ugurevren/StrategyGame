@@ -40,19 +40,12 @@ public class ProductionUIItem : MonoBehaviour, IPointerClickHandler
     {
         yield return new WaitUntil(() => Input.GetMouseButtonDown(0)); // Wait for left mouse button click
 
-        var worldPosition = GetMouseWorldPosition();
+        var worldPosition = GridTester.Instance.GetMouseWorldPosition();
         Grid<GridObject>.Instance.GetXY(worldPosition, out var x, out var y);
         if (Grid<GridObject>.Instance.GetGridObject(x,y).Type == GridObject.GridType.Empty)
         {
             _soldierSpawner.SpawnSoldier(_soldierType, new Vector2Int(x,y));
         }
     }
-    public Vector3 GetMouseWorldPosition()
-    {
-        var worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        worldPosition.z = 0;
-        return worldPosition;
-    }
-
 }
  

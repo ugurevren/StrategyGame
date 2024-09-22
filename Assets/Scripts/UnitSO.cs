@@ -14,7 +14,7 @@ public class UnitSO : ScriptableObject, IAttackable
     public int width;
     public int height;
     public int health;
-    public int energyCost;
+    public int energyCost; 
     
     public bool TakeDamage(int damage, out bool isDead)
     {

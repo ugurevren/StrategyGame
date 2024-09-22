@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class UnitData : ScriptableObject
 {
-    public string name;
     public Sprite sprite;
     public int damage;
     public int health;
