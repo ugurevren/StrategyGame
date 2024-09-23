@@ -23,7 +23,7 @@ namespace Helpers
             var go= Instantiate(_enemyPrefab, spawnPos, Quaternion.identity);
             go.GetComponent<Enemy>().unitSo = _unitSO;
             go.GetComponent<Enemy>().unitSo.SetCreatedGameObject(go);
-            _gridTester.SetGridType(spawnPos,GridObject.GridType.Enemy,0,go.GetComponent<Enemy>().unitSo);
+            _gridTester.SetGridType(spawnPos,GridObject.GridType.Enemy,go.GetComponent<Enemy>().unitSo);
         }
     }
 }

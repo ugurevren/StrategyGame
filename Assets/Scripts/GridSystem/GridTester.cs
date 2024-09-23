@@ -69,7 +69,7 @@ namespace GridSystem
             {
                 var gridPosition = gridPositionList[i];
                 SetGridType(_grid.GetWorldPosition(gridPosition.x, gridPosition.y),
-                    GridObject.GridType.Building, i, placedObject);
+                    GridObject.GridType.Building, placedObject);
             }
         }
 
@@ -108,13 +108,13 @@ namespace GridSystem
             worldPosition.z = 0;
             return worldPosition;
         }
-        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, UnitSO unitSo = null)
+        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, UnitSO unitSo = null)
         {
-            _grid.GetGridObject(worldPosition).Set(type, index, unitSo);
+            _grid.GetGridObject(worldPosition).Set(type, unitSo);
         }
-        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, int index, Poolable poolable)
+        public void SetGridType(Vector3 worldPosition, GridObject.GridType type, Poolable poolable)
         {
-            _grid.GetGridObject(worldPosition).Set(type, index, poolable);
+            _grid.GetGridObject(worldPosition).Set(type, poolable);
         }
         public bool GetProductionMode()
         {
@@ -134,6 +134,10 @@ namespace GridSystem
         {
             return _buildingMode;
         }
+        public Vector2Int GetGridOrigin()
+        {
+            return new Vector2Int((int)_originPosition.x, (int)_originPosition.y);
+        }
 
         public void Clear()
         {
@@ -143,7 +147,7 @@ namespace GridSystem
             {
                 for (var y = 0; y < _grid.GetHeight(); y++)
                 {
-                    _grid.GetGridObject(x, y).Set(GridObject.GridType.Empty, 0);
+                    _grid.GetGridObject(x, y).Set(GridObject.GridType.Empty);
                 }
             }
         }

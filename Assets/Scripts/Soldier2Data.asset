@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf10b95f6e5aab846a6dbcc47c707b50, type: 3}
-  m_Name: Soldier1Data
+  m_Name: Soldier2Data
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: 2be53753fbea3e3449ef47bb2c22c42a, type: 3}
-  damage: 10
+  sprite: {fileID: 21300000, guid: 5eed28d76bf7c7948942da8ac2f5f8c2, type: 3}
+  damage: 5
   health: 2
   energyCost: 0

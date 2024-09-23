@@ -22,7 +22,7 @@ public class UnitSO : ScriptableObject, IAttackable
         if (health <= 0)
         {
             var worldPos = Grid<GridObject>.Instance.GetWorldPosition((int) prefab.position.x, (int) prefab.position.z);
-            Grid<GridObject>.Instance.GetGridObject(worldPos).Set(GridObject.GridType.Empty, 0);
+            Grid<GridObject>.Instance.GetGridObject(worldPos).Set(GridObject.GridType.Empty);
             isDead = true;
             return true;
         }

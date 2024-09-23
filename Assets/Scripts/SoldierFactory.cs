@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GridSystem;
 using UnityEngine;
 
 public class SoldierFactory : IUnitFactory
@@ -12,8 +13,8 @@ public class SoldierFactory : IUnitFactory
 
     public Unit CreateUnit(int soldierType, Vector2Int gridPos,List<UnitData> unitDataList)
     {
-        var soldier = Object.Instantiate(_soldierPrefab).GetComponent<Unit>();
-        soldier.Initialize(gridPos);
+        var placedObjectWorldPosition = GridTester.Instance.GetGrid().GetWorldPosition(gridPos.x, gridPos.y);
+        var soldier = PlacedObjectPool.Instance.Get(placedObjectWorldPosition, gridPos, _soldierPrefab.GetComponent<Poolable>()).GetComponent<Unit>();
 
         switch (soldierType)
         {

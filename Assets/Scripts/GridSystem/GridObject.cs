@@ -18,7 +18,6 @@ namespace GridSystem
         public GridType Type { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        public int index;
         public int rotation;
         public Poolable poolable;
         public UnitSO UnitSo;
@@ -32,17 +31,15 @@ namespace GridSystem
             this.rotation = rotation;
         }
         
-        public void Set(GridType type, int index, UnitSO unitSo = null)
+        public void Set(GridType type, UnitSO unitSo = null)
         {
             this.Type = type;
-            this.index = index;
             this.UnitSo = unitSo;
             grid.TriggerGridObjectChanged(X,Y);
         }
-        public void Set(GridType type, int index,Poolable poolable)
+        public void Set(GridType type,Poolable poolable)
         {
             this.Type = type;
-            this.index = index;
            this.poolable = poolable;
             grid.TriggerGridObjectChanged(X,Y);
         }
