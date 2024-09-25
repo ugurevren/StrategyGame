@@ -9,14 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6cd7794ffc26b449bff4b070d7dcde2, type: 3}
-  m_Name: Enemy
+  m_Script: {fileID: 11500000, guid: cf10b95f6e5aab846a6dbcc47c707b50, type: 3}
+  m_Name: Enemy1Data
   m_EditorClassIdentifier: 
-  name: Enemy
-  prefab: {fileID: 546741907314832304, guid: 4978e09c9b683914cba28403f66c59c5, type: 3}
-  visual: {fileID: 546741907314832304, guid: 4978e09c9b683914cba28403f66c59c5, type: 3}
   sprite: {fileID: 21300000, guid: bd74f585d1cd03440ab6ce39de7c9070, type: 3}
-  width: 0
-  height: 0
-  health: 0
+  damage: 1
+  health: 2
   energyCost: 0
+  unitTypeIndex: 1
+  unitType: 1

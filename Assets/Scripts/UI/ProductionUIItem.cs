@@ -1,50 +1,46 @@
 using System.Collections;
 using GridSystem;
-using Soldier;
+using Helpers;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ProductionUIItem : MonoBehaviour, IPointerClickHandler
+namespace UI
 {
-    public Sprite sprite;
-    public string itemName;
-    public int itemCost;
-    private Image _image;
-    private SoldierSpawner _soldierSpawner;
-    private int _soldierType;
-    private Transform _selectedSpawnPoint;
-
-    private void Awake()
+    public class ProductionUIItem : MonoBehaviour, IPointerClickHandler
     {
-        _image = GetComponentInChildren<Image>();
-    }
+        private Image _image;
+        private UnitSpawner _unitSpawner;
+        private int _unitTypeIndex;
+        private Transform _selectedSpawnPoint;
 
-    public void SetProductionUIItem(Sprite sprite, string itemName, int itemCost, int soldierType,SoldierSpawner soldierSpawner)
-    {
-        this.sprite = sprite;
-        _image.sprite = sprite;
-        this.itemName = itemName;
-        this.itemCost = itemCost;
-        _soldierType = soldierType;
-        _soldierSpawner = soldierSpawner;
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-       // wait for another Input
-       StartCoroutine(WaitForSecondInput());
-       
-    }
-    private IEnumerator WaitForSecondInput()
-    {
-        yield return new WaitUntil(() => Input.GetMouseButtonDown(0)); // Wait for left mouse button click
-
-        var worldPosition = GridTester.Instance.GetMouseWorldPosition();
-        Grid<GridObject>.Instance.GetXY(worldPosition, out var x, out var y);
-        if (Grid<GridObject>.Instance.GetGridObject(x,y).Type == GridObject.GridType.Empty)
+        private void Awake()
         {
-            _soldierSpawner.SpawnSoldier(_soldierType, new Vector2Int(x,y));
+            _image = GetComponentInChildren<Image>();
+        }
+
+        public void SetProductionUIItem(Sprite sprite,int soldierType,UnitSpawner unitSpawner)
+        {
+            _image.sprite = sprite;
+            _unitTypeIndex = soldierType;
+            _unitSpawner = unitSpawner;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            StartCoroutine(WaitForSecondInput());
+        }
+    
+        private IEnumerator WaitForSecondInput()
+        {
+            yield return new WaitUntil(() => Input.GetMouseButtonDown(0)); // Wait for left mouse button click
+
+            var worldPosition = GridTester.Instance.GetMouseWorldPosition();
+            Grid<GridObject>.Instance.GetXY(worldPosition, out var x, out var y);
+            if (Grid<GridObject>.Instance.GetGridObject(x,y).Type == GridObject.GridType.Empty)
+            {
+                _unitSpawner.SpawnSoldier(_unitTypeIndex, new Vector2Int(x,y));
+            }
         }
     }
 }

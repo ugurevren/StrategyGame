@@ -5,25 +5,20 @@ namespace Helpers
 {
     public class EnemySpawner : MonoBehaviour
     {
-        [SerializeField] private GameObject _enemyPrefab;
-        [SerializeField] private GridTester _gridTester;
-        [SerializeField] private UnitSO _unitSO;
+        private UnitSpawner _unitSpawner;
         [SerializeField] private int _x;
         [SerializeField] private int _y;
 
         private void Start()
         {
+            _unitSpawner = GetComponent<UnitSpawner>();
+            //InvokeRepeating("SpawnEnemy", 0, 15);
             SpawnEnemy();
         }
 
         public void SpawnEnemy()
         {
-            var gridPos = new Vector2Int(_x, _y);
-            var spawnPos = Grid<GridObject>.Instance.GetWorldPosition(gridPos.x, gridPos.y);
-            var go= Instantiate(_enemyPrefab, spawnPos, Quaternion.identity);
-            go.GetComponent<Enemy>().unitSo = _unitSO;
-            go.GetComponent<Enemy>().unitSo.SetCreatedGameObject(go);
-            _gridTester.SetGridType(spawnPos,GridObject.GridType.Enemy,go.GetComponent<Enemy>().unitSo);
+            _unitSpawner.SpawnEnemy(1,new Vector2Int(_x,_y));
         }
     }
 }

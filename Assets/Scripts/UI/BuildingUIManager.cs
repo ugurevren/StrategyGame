@@ -8,7 +8,7 @@ namespace UI
     {
         public void OnPointerClick(PointerEventData eventData)
         {
-            GridTester.Instance.SelectUnit(gameObject.name.Substring(0,gameObject.name.IndexOf("(")));
+            GridTester.Instance.SelectBuilding(gameObject.name.Substring(0,gameObject.name.IndexOf("(")));
         }
     }
 }

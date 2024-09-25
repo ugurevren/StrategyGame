@@ -17,7 +17,6 @@ namespace Helpers
             else
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
         }
 
@@ -32,8 +31,8 @@ namespace Helpers
         {
             for (int index = 0; index < eventSystemRaysastResults.Count; index++)
             {
-                RaycastResult curRaysastResult = eventSystemRaysastResults[index];
-                if (curRaysastResult.gameObject.layer == _uiLayer)
+                var curRaycastResult = eventSystemRaysastResults[index];
+                if (curRaycastResult.gameObject.layer == _uiLayer)
                     return true;
             }
             return false;

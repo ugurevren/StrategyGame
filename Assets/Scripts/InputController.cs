@@ -1,37 +1,48 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Poolable.Units;
 using GridSystem;
+using Helpers;
 using UnityEngine;
 
 public class InputController : MonoBehaviour
 {
+    public GameObject selectedSoldier;
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)&&!Helpers.IsPointerOverUI.Instance.IsPointerOverUIElement())
         {
-            Vector3 mouseWorldPosition = GridTester.Instance.GetMouseWorldPosition();
+            var mouseWorldPosition = GridTester.Instance.GetMouseWorldPosition();
             Grid<GridObject>.Instance.GetXY(mouseWorldPosition, out int x, out int y);
-            var type = Grid<GridObject>.Instance.GetGridObject(x, y).Type;
-            switch (type)
+            var gridObject = Grid<GridObject>.Instance.GetGridObject(x, y);
+            switch (gridObject.Type)
             {
                 case GridObject.GridType.Empty:
-                    Debug.Log("empty");
+                    if (GridTester.Instance.selectedBuilding != null&& GridTester.Instance.GetBuildingMode())
+                    {
+                        BuildingSpawner.Instance.SpawnBuilding();
+                        BuildingGhost.Instance.StopGhosting();
+                    }
                     break;
-                case GridObject.GridType.Building:
-                    Debug.Log("building");
+                case GridObject.GridType.Building:;
+                    var building = gridObject.GetPoolable();
+                    building.HandleClick();
                     break;
                 case GridObject.GridType.Enemy:
-                    Debug.Log("enemy");
+                    // Implement enemy click if needed
                     break;
                 case GridObject.GridType.FriendlyUnit:
-                    //TODO soldier gride eklendi ancak hareketine göre grid type güncellenmeli
-                    Debug.Log("friendly unit");
+                    var soldier = gridObject.GetPoolable();
+                    selectedSoldier = soldier.gameObject;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
+        }else if (Input.GetMouseButtonDown(1)&&selectedSoldier!=null)
+        {
+            selectedSoldier.GetComponent<Soldier>().HandleRightClick();
         }
     }
 }

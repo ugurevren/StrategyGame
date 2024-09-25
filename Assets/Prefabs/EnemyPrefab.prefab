@@ -188,3 +188,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 723516e7846a9834d8996a7a954692a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefab: {fileID: 546741907314832305}
+  ghostVisual: {fileID: 546741907243159033}
+  OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+  OnRightClick:
+    m_PersistentCalls:
+      m_Calls: []
+  unitData: {fileID: 11400000, guid: d7c4d153ecda916419e2686e6cbdca48, type: 2}
+  _spriteRenderer: {fileID: 546741907243159032}

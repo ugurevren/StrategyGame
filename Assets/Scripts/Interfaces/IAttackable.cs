@@ -3,7 +3,7 @@ namespace Interfaces
 {
     public interface IAttackable
     {
-        bool TakeDamage(int damage, out bool isDead);
+        bool TakeDamage(int damage);
 
     }
 

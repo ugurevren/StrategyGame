@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using UnityEngine;
+using _Poolable;
 
 namespace GridSystem
 {
@@ -18,23 +17,19 @@ namespace GridSystem
         public GridType Type { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        public int rotation;
         public Poolable poolable;
-        public UnitSO UnitSo;
         
-        public GridObject(Grid<GridObject> grid, int x, int y, int rotation = 0)
+        public GridObject(Grid<GridObject> grid, int x, int y)
         {
             this.grid = grid;
             this.X = x;
             this.Y = y;
             this.Type = GridType.Empty;
-            this.rotation = rotation;
         }
         
-        public void Set(GridType type, UnitSO unitSo = null)
+        public void Set(GridType type)
         {
             this.Type = type;
-            this.UnitSo = unitSo;
             grid.TriggerGridObjectChanged(X,Y);
         }
         public void Set(GridType type,Poolable poolable)
@@ -43,30 +38,9 @@ namespace GridSystem
            this.poolable = poolable;
             grid.TriggerGridObjectChanged(X,Y);
         }
-        
-        
-        public List<Vector2Int> GetNotWalkableAreas(Grid<GridObject> grid)
+        public Poolable GetPoolable()
         {
-            var notWalkableAreas = new List<Vector2Int>();
-
-            for (int x = 0; x < grid.GetWidth(); x++)
-            {
-                for (int y = 0; y < grid.GetHeight(); y++)
-                {
-                    var gridObject = grid.GetGridObject(x, y);
-                    if (gridObject.Type != GridType.Empty)
-                    {
-                        notWalkableAreas.Add(new Vector2Int(x, y));
-                    }
-                }
-            }
-
-            return notWalkableAreas;
-        }
-        
-        public bool CheckIfPositionIsWalkable(GridObject gridObject)
-        {
-            return gridObject.Type == GridType.Empty;
+            return poolable;
         }
         
         public override string ToString()
@@ -74,9 +48,5 @@ namespace GridSystem
             return ".";
         }
         
-        public Vector3 GetWorldPosition()
-        {
-            return grid.GetWorldPosition(X, Y);
-        }
     }
 }

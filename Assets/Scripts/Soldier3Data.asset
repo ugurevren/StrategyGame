@@ -16,3 +16,5 @@ MonoBehaviour:
   damage: 2
   health: 2
   energyCost: 0
+  unitTypeIndex: 3
+  unitType: 0
