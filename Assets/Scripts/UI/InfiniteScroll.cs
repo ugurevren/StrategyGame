@@ -5,11 +5,7 @@ namespace UI
 {
     public class InfiniteScroll : MonoBehaviour
     {
-        //I didn't understand the revision "Infinite Scrollview should work properly with generally accepted aspect ratios."
-        //because I tested it with all possible desktop aspect ratios and couldn't find any errors.
-        //If the aspect ratio changes in runtime, it doesn't work,
-        //but if the aspect ratio changes under normal conditions (before going into play mode) it works.
-        
+       
         [SerializeField] private RectTransform contentPanel;
         [SerializeField] private List<GameObject> itemPrefabs;
         [SerializeField] private float itemHeight = 100f; 
