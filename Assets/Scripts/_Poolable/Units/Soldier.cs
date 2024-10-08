@@ -105,11 +105,7 @@ namespace _Poolable.Units
                     AttackEnemy(gridObject);
                     break;
                 case GridObject.GridType.Building:
-                    //According to my logic, contrary to what is stated in the pdf, it should not attack buildings.
-                    //However, if it is desired to attack, Pathfinding.cs | 75 should be changed to allow attacking.
-                    //Of course, after attacking, should be careful when changing the grid type because
-                    //the buildings bigger than one grid. If the determined attackable buildings in pdf are enemy buildings,
-                    //grids' types will be determined as Enemy, so this can be done without changing Pathfinding.cs and this case.
+                
                     break;
             
             }
